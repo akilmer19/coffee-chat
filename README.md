@@ -48,7 +48,7 @@ That's it — it now runs every Monday automatically.
 |------|-----|
 | **Schedule** | Edit the `cron` in `.github/workflows/coffee-chat.yml`. Current: Mondays 15:00 UTC (8am PT / 11am ET). |
 | **Biweekly** | Keep the weekly cron and add a week-number gate at the top of `main()`: `import datetime; if datetime.date.today().isocalendar().week % 2: return`. |
-| **Message text** | Edit the `INTRO` string in `pair.py`. |
+| **Message text** | Edit the `INTROS` list in `pair.py` — one is picked at random per pairing. Add/remove freely. |
 | **Repeat-avoidance window** | Set env `HISTORY_WINDOW` (default `5` rounds). |
 | **Allow repeat matches** | Set env `AVOID_REPEATS=false`. |
 | **Trio vs. pairs** | Automatic — odd headcount produces exactly one trio. |

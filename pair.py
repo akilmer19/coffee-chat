@@ -21,12 +21,39 @@ AVOID_REPEATS = os.environ.get("AVOID_REPEATS", "true").lower() == "true"
 HISTORY_WINDOW = int(os.environ.get("HISTORY_WINDOW", "5"))  # rounds to avoid repeats across
 DRY_RUN = os.environ.get("DRY_RUN", "false").lower() == "true"
 
-INTRO = (
-    ":coffee: *Coffee chat!* You've been randomly matched for a 15-minute hang "
-    "this week.\n\n"
-    "No agenda — grab a coffee (virtual or real) and get to know each other. "
-    "Reply here to lock in a time that works for everyone. :speech_balloon:"
-)
+# One is picked at random per pairing. Written to read fine for a pair or a trio.
+# Slack mrkdwn: *bold*, :emoji: shortcodes.
+INTROS = [
+    ":coffee: *Coffee's on!* You've been matched for a 15-minute chat this week. "
+    "No agenda, no slides — just good company. Pick a time and enjoy! :speech_balloon:",
+
+    ":wave: *Surprise — you've been paired!* Grab 15 minutes and a drink :coffee:, "
+    "and get to know each other. Reply here to lock in a slot. Enjoy!",
+
+    ":sparkles: *A wild coffee chat appeared!* Your name's on 15 minutes this week. "
+    "Say hi, swap stories, enjoy. :coffee:",
+
+    ":handshake: *New match unlocked!* Spend 15 minutes together this week — no prep "
+    "required. Reply here to find a time. :tada:",
+
+    ":coffee::speech_balloon: *Your weekly coffee crew is here!* Set up a quick 15-min "
+    "hang and trade stories. Enjoy the chat!",
+
+    ":alarm_clock: *15 minutes, zero agenda.* You've been randomly matched for a coffee "
+    "chat this week — go say hi and enjoy! :coffee:",
+
+    ":tada: *Matched!* The coffee gods have spoken. Find 15 minutes this week to "
+    "connect — enjoy every sip. :coffee:",
+
+    ":seedling: *Fresh pairing, just for you.* Grab 15 minutes this week to get to know "
+    "your match. No prep, just vibes. Enjoy! :coffee:",
+
+    ":mag: *Look who got matched!* A 15-minute coffee chat is headed your way this week. "
+    "Reply here to pick a time and enjoy! :speech_balloon:",
+
+    ":rocket: *Pairing incoming!* 15 minutes, your match, and a coffee of your choice "
+    ":coffee:. Enjoy the chat this week!",
+]
 
 
 def get_members(client):
@@ -102,7 +129,7 @@ def announce(client, groups):
             print("Would pair:", group)
             continue
         channel = client.conversations_open(users=",".join(group))["channel"]["id"]
-        client.chat_postMessage(channel=channel, text=INTRO)
+        client.chat_postMessage(channel=channel, text=random.choice(INTROS))
 
 
 def save_history(groups, history):
