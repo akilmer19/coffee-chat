@@ -1,0 +1,18 @@
+{
+  "channel_id": "C0CD2AVHPR8",
+  "raw_member_count": 8,
+  "eligible_count": 7,
+  "skipped": [
+    {
+      "id": "U0CD12B04SD",
+      "why": "bot",
+      "name": "coffee_chat"
+    }
+  ],
+  "group_sizes": [
+    2,
+    2,
+    3
+  ],
+  "ran_at": "2026-10-29T16:14:50.998030+00:00"
+}
