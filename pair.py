@@ -172,7 +172,10 @@ def save_history(groups, history):
 
 
 def main():
-    if BIWEEKLY and not DRY_RUN:
+    # The biweekly gate applies only to the scheduled cron. Manual runs
+    # (workflow_dispatch) and local runs always pair, so testing isn't blocked.
+    scheduled = os.environ.get("EVENT_NAME", "schedule") == "schedule"
+    if BIWEEKLY and scheduled and not DRY_RUN:
         week = datetime.date.today().isocalendar()[1]
         if week % 2 != BIWEEKLY_PARITY:
             print(f"ISO week {week} is an off week (biweekly); skipping this run.")

@@ -29,6 +29,9 @@ jobs:
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
+          # Only the scheduled cron honors the biweekly gate; a manual
+          # "Run workflow" always pairs, so tests work on any week.
+          EVENT_NAME: ${{ github.event_name }}
         run: python pair.py
 
       - name: Commit updated history
