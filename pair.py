@@ -25,6 +25,8 @@ DRY_RUN = os.environ.get("DRY_RUN", "false").lower() == "true"
 # whose number matches BIWEEKLY_PARITY. Parity 1 (odd weeks) => Nov 3, 17, Dec 1...
 BIWEEKLY = os.environ.get("BIWEEKLY", "true").lower() == "true"
 BIWEEKLY_PARITY = int(os.environ.get("BIWEEKLY_PARITY", "1"))
+# Hybrid notifications: post a kickoff to the channel in addition to the DMs.
+CHANNEL_POST = os.environ.get("CHANNEL_POST", "true").lower() == "true"
 
 # One is picked at random per pairing. Written to read fine for a pair or a trio.
 # Slack mrkdwn: *bold*, :emoji: shortcodes.
@@ -58,6 +60,25 @@ INTROS = [
 
     ":rocket: *Pairing incoming!* 15 minutes, your match, and a coffee of your choice "
     ":coffee:. Enjoy the chat this week!",
+]
+
+# Posted once to the whole channel before DMs go out (the "hybrid" kickoff).
+# Keeps who-is-matched-with-whom private while signaling the round is live.
+CHANNEL_POSTS = [
+    ":coffee: *Coffee chats are brewing!* This round's matches just went out — "
+    "check your DMs to meet your pair. Enjoy! :speech_balloon:",
+
+    ":wave: *It's coffee chat day!* New pairings are in your DMs right now. "
+    "Find 15 minutes this round and say hi! :coffee:",
+
+    ":sparkles: *Fresh matches are out!* Peek at your DMs to see who you're grabbing "
+    "a coffee with this round. Have fun! :coffee:",
+
+    ":tada: *A new round of coffee chats has begun!* Your match is waiting in your DMs — "
+    "go set up a quick 15-minute hang. Enjoy!",
+
+    ":mega: *Coffee chats are live!* Everyone's just been matched — check your DMs for "
+    "your partner this round and enjoy the chat! :coffee:",
 ]
 
 
@@ -154,6 +175,10 @@ def best_groups(users, recent, tries=200):
 
 
 def announce(client, groups):
+    # Hybrid kickoff: one public post to the channel, then private DMs per match.
+    if CHANNEL_POST and not DRY_RUN:
+        client.chat_postMessage(channel=CHANNEL_ID, text=random.choice(CHANNEL_POSTS))
+
     for group in groups:
         if DRY_RUN:
             print("Would pair:", group)
