@@ -1,18 +1,25 @@
 {
-  "channel_id": "C0CD2AVHPR8",
-  "raw_member_count": 8,
-  "eligible_count": 7,
+  "channel_id": "C0CE77ZG3J4",
+  "raw_member_count": 4,
+  "eligible_count": 1,
   "skipped": [
+    {
+      "id": "U09RTJWKPJB",
+      "why": "bot",
+      "name": "notion_ai"
+    },
+    {
+      "id": "U0B2ZMUV98B",
+      "why": "bot",
+      "name": "clickup"
+    },
     {
       "id": "U0CD12B04SD",
       "why": "bot",
       "name": "coffee_chat"
     }
   ],
-  "group_sizes": [
-    2,
-    2,
-    3
-  ],
-  "ran_at": "2026-10-29T16:14:50.998030+00:00"
+  "group_sizes": [],
+  "note": "fewer than 2 eligible members",
+  "ran_at": "2026-10-29T23:09:39.625097+00:00"
 }
