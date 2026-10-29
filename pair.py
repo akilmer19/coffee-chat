@@ -5,6 +5,7 @@ Fetches the members of a designated channel, randomly pairs them (a trio when
 the count is odd), opens a group DM per pairing, and posts an intro prompting a
 15-minute chat. Optionally avoids repeating the previous round's pairings.
 """
+import datetime
 import json
 import os
 import random
@@ -20,6 +21,10 @@ HISTORY_PATH = Path(os.environ.get("HISTORY_PATH", "state/history.json"))
 AVOID_REPEATS = os.environ.get("AVOID_REPEATS", "true").lower() == "true"
 HISTORY_WINDOW = int(os.environ.get("HISTORY_WINDOW", "5"))  # rounds to avoid repeats across
 DRY_RUN = os.environ.get("DRY_RUN", "false").lower() == "true"
+# Biweekly cadence. The workflow fires every Tuesday; we only pair on ISO weeks
+# whose number matches BIWEEKLY_PARITY. Parity 1 (odd weeks) => Nov 3, 17, Dec 1...
+BIWEEKLY = os.environ.get("BIWEEKLY", "true").lower() == "true"
+BIWEEKLY_PARITY = int(os.environ.get("BIWEEKLY_PARITY", "1"))
 
 # One is picked at random per pairing. Written to read fine for a pair or a trio.
 # Slack mrkdwn: *bold*, :emoji: shortcodes.
@@ -142,6 +147,12 @@ def save_history(groups, history):
 
 
 def main():
+    if BIWEEKLY and not DRY_RUN:
+        week = datetime.date.today().isocalendar()[1]
+        if week % 2 != BIWEEKLY_PARITY:
+            print(f"ISO week {week} is an off week (biweekly); skipping this run.")
+            return
+
     client = WebClient(token=BOT_TOKEN)
     users = get_members(client)
     if len(users) < 2:

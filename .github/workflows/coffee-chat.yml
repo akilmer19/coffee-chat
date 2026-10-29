@@ -2,9 +2,12 @@ name: Coffee Chat Pairings
 
 on:
   schedule:
-    # Mondays at 15:00 UTC = 8am PT / 11am ET. Adjust to taste.
-    # Want biweekly? Keep weekly here and gate inside pair.py on week number.
-    - cron: "0 15 * * 1"
+    # Fires every Tuesday at 18:00 UTC = 10am PT / 1pm ET (US standard time).
+    # Biweekly cadence is enforced in pair.py (BIWEEKLY / BIWEEKLY_PARITY):
+    # it only pairs on odd ISO weeks -> Nov 3, Nov 17, Dec 1, Dec 15, ...
+    # Note: GitHub cron is UTC and ignores daylight saving, so during US DST
+    # (mid-Mar to early-Nov) this lands at 11am PT / 2pm ET.
+    - cron: "0 18 * * 2"
   workflow_dispatch: {}   # lets you trigger a run manually from the Actions tab
 
 permissions:

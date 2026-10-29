@@ -46,8 +46,8 @@ That's it — it now runs every Monday automatically.
 
 | What | How |
 |------|-----|
-| **Schedule** | Edit the `cron` in `.github/workflows/coffee-chat.yml`. Current: Mondays 15:00 UTC (8am PT / 11am ET). |
-| **Biweekly** | Keep the weekly cron and add a week-number gate at the top of `main()`: `import datetime; if datetime.date.today().isocalendar().week % 2: return`. |
+| **Schedule** | Edit the `cron` in `.github/workflows/coffee-chat.yml`. Current: Tuesdays 18:00 UTC (10am PT / 1pm ET in US standard time). GitHub cron is UTC and ignores DST, so in summer it lands an hour later. |
+| **Cadence** | Biweekly by default (`BIWEEKLY=true`), pairing only on odd ISO weeks (`BIWEEKLY_PARITY=1`) → Nov 3, 17, Dec 1… Set `BIWEEKLY=false` for weekly, or flip `BIWEEKLY_PARITY` to `0` to run the opposite weeks. |
 | **Message text** | Edit the `INTROS` list in `pair.py` — one is picked at random per pairing. Add/remove freely. |
 | **Repeat-avoidance window** | Set env `HISTORY_WINDOW` (default `5` rounds). |
 | **Allow repeat matches** | Set env `AVOID_REPEATS=false`. |
