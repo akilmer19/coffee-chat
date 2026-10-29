@@ -35,14 +35,10 @@ jobs:
         run: |
           git config user.name "coffee-chat-bot"
           git config user.email "actions@users.noreply.github.com"
-          if [ -f state/history.json ]; then
-            git add state/history.json
-            if ! git diff --staged --quiet; then
-              git commit -m "Update pairing history"
-              git push
-            else
-              echo "No pairing-history changes to commit."
-            fi
+          git add state/history.json state/last_run.json 2>/dev/null || true
+          if ! git diff --staged --quiet; then
+            git commit -m "Update pairing history / diagnostics"
+            git push
           else
-            echo "No history file written (nothing was paired); skipping commit."
+            echo "No state changes to commit."
           fi

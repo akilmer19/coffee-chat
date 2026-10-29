@@ -62,7 +62,11 @@ INTROS = [
 
 
 def get_members(client):
-    """Return human (non-bot, active) member IDs of the channel."""
+    """Return human (non-bot, active) member IDs of the channel.
+
+    Also stashes a diagnostic snapshot (raw count, who was filtered out and why)
+    on the function for the caller to record. No message content, just IDs.
+    """
     ids, cursor = [], None
     while True:
         resp = client.conversations_members(channel=CHANNEL_ID, cursor=cursor, limit=200)
@@ -71,15 +75,36 @@ def get_members(client):
         if not cursor:
             break
 
-    humans = []
+    humans, skipped = [], []
     for uid in ids:
         if uid == "USLACKBOT":
+            skipped.append({"id": uid, "why": "slackbot"})
             continue
         info = client.users_info(user=uid)["user"]
-        if info.get("is_bot") or info.get("deleted"):
+        if info.get("is_bot"):
+            skipped.append({"id": uid, "why": "bot", "name": info.get("name")})
+            continue
+        if info.get("deleted"):
+            skipped.append({"id": uid, "why": "deleted", "name": info.get("name")})
             continue
         humans.append(uid)
+
+    get_members.diagnostic = {
+        "channel_id": CHANNEL_ID,
+        "raw_member_count": len(ids),
+        "eligible_count": len(humans),
+        "skipped": skipped,
+    }
     return humans
+
+
+def write_diagnostic(extra):
+    """Write state/last_run.json so a run's outcome is inspectable from the repo."""
+    diag = dict(getattr(get_members, "diagnostic", {}))
+    diag.update(extra)
+    diag["ran_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    HISTORY_PATH.parent.mkdir(parents=True, exist_ok=True)
+    (HISTORY_PATH.parent / "last_run.json").write_text(json.dumps(diag, indent=2))
 
 
 def make_groups(users):
@@ -157,6 +182,7 @@ def main():
     users = get_members(client)
     if len(users) < 2:
         print(f"Only {len(users)} eligible member(s); nothing to pair.")
+        write_diagnostic({"group_sizes": [], "note": "fewer than 2 eligible members"})
         return
 
     history = {}
@@ -169,6 +195,7 @@ def main():
 
     if AVOID_REPEATS and not DRY_RUN:
         save_history(groups, history)
+    write_diagnostic({"group_sizes": sorted(len(g) for g in groups)})
 
     print(f"Paired {len(users)} people into {len(groups)} group(s).")
 
