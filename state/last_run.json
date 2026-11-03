@@ -1,0 +1,25 @@
+{
+  "channel_id": "C0CE77ZG3J4",
+  "raw_member_count": 4,
+  "eligible_count": 1,
+  "skipped": [
+    {
+      "id": "U09RTJWKPJB",
+      "why": "bot",
+      "name": "notion_ai"
+    },
+    {
+      "id": "U0B2ZMUV98B",
+      "why": "bot",
+      "name": "clickup"
+    },
+    {
+      "id": "U0CD12B04SD",
+      "why": "bot",
+      "name": "coffee_chat"
+    }
+  ],
+  "group_sizes": [],
+  "note": "fewer than 2 eligible members",
+  "ran_at": "2026-11-03T22:59:05.762821+00:00"
+}
